@@ -2,6 +2,84 @@ const express = require("express");
 const router = express.Router();
 const PantryItem = require("../models/PantryItem");
 const { authMiddleware, adminMiddleware } = require("../middleware/authMiddleware"); 
+const User = require("../models/User"); // Import User model for email notifications
+const nodemailer = require("nodemailer");
+const cron = require("node-cron");
+
+require("dotenv").config(); // Load environment variables
+
+
+// ✅ Email Notification Function
+const sendExpirationEmail = async (userEmail, items) => {
+    try {
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
+
+        // 🔹 Create Email Content
+        const itemList = items.map(item => `${item.name} (Expires: ${item.expirationDate.toDateString()})`).join("\n");
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: userEmail,
+            subject: "Pantry Expiration Alert",
+            text: `The following items in your pantry are expiring soon:\n\n${itemList}\n\nCheck your pantry to prevent waste!`
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log(`✅ Expiration email sent to ${userEmail}`);
+    } catch (error) {
+        console.error("❌ Error sending email:", error.message);
+    }
+};
+
+// 🕒 Schedule Daily Expiration Check (Runs at 8 AM)
+cron.schedule("* * * * *", async () => {
+    console.log("🔍 Running expiration check...");
+
+    const today = new Date();
+    const threeDaysLater = new Date();
+    threeDaysLater.setDate(today.getDate() + 3);
+
+    try {
+        const users = await User.find(); // Get all users
+
+        for (const user of users) {
+            const expiringItems = await PantryItem.find({
+                user: user._id,
+                expirationDate: { $gte: today, $lte: threeDaysLater }
+            });
+
+            if (expiringItems.length > 0) {
+                await sendExpirationEmail(user.email, expiringItems);
+            }
+        }
+    } catch (error) {
+        console.error("❌ Error checking expiring items:", error.message);
+    }
+});
+
+// ✅ Get Expiring Items for a User (Manual Check)
+router.get("/expiring-soon", authMiddleware, async (req, res) => {
+    try {
+        const today = new Date();
+        const threeDaysLater = new Date();
+        threeDaysLater.setDate(today.getDate() + 3);
+
+        const expiringItems = await PantryItem.find({
+            user: req.user._id,
+            expirationDate: { $gte: today, $lte: threeDaysLater }
+        });
+
+        res.json({ expiringItems });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
 
 // 🟢 Add a Pantry Item (For Logged-in Users, Not Just Admins)
 router.post("/", authMiddleware, async (req, res) => {
@@ -69,6 +147,23 @@ router.put("/:id", authMiddleware, async (req, res) => {
 
         await item.save();
         res.json(item);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+
+router.get("/expiring-soon", authMiddleware, async (req, res) => {
+    try {
+        const today = new Date();
+        const threeDaysLater = new Date();
+        threeDaysLater.setDate(today.getDate() + 3);
+
+        const expiringItems = await PantryItem.find({
+            user: req.user._id,
+            expirationDate: { $gte: today, $lte: threeDaysLater }
+        });
+
+        res.json({ expiringItems });
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }
