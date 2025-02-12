@@ -3,7 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const pantryRoutes = require('./routes/pantryRoutes');
-
+const aiRecipeRoutes = require("./routes/aiRecipeRoutes");
 const authRoutes = require("./routes/authRoutes"); // 🔹 Add Authentication Routes
 const errorHandler = require("./middleware/errorMiddleware");
 
@@ -32,8 +32,10 @@ app.use("/api/auth", authRoutes); // 🔹 Add Authentication Routes
 app.use("/api/pantry", pantryRoutes); // Pantry Item Routes
 
 app.use(errorHandler);
+app.use("/api/recipes", aiRecipeRoutes);
 
 
 // ✅ Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
