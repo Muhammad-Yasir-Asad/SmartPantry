@@ -5,7 +5,7 @@ function App() {
     const [message, setMessage] = useState("");
 
     useEffect(() => {
-        axios.get("http://localhost:5000/")
+        axios.get(`${process.env.REACT_APP_BACKEND_URL}/`)
             .then(response => setMessage(response.data))
             .catch(error => console.error(error));
     }, []);
