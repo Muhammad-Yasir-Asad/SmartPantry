@@ -13,7 +13,7 @@ const app = express();
 
 // ✅ Middleware
 app.use(express.json()); // Parses incoming JSON requests
-app.use(cors()); // Enables CORS for frontend communication
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 // ✅ Connect to MongoDB
 mongoose

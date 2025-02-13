@@ -10,37 +10,41 @@ dotenv.config(); // Load environment variables
 
 const router = express.Router();
 
-// 🟢 Register a User
 router.post(
     "/register",
     [
         check("name", "Name is required").not().isEmpty(),
         check("email", "Valid email required").isEmail(),
         check("password", "Password must be at least 6 characters").isLength({ min: 6 }),
-        check("role", "Role must be either 'admin' or 'user'").isIn(["admin", "user"]),
     ],
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
         try {
-            const { name, email, password, role } = req.body;
+            const { name, email, password } = req.body;
             const lowerCaseEmail = email.toLowerCase(); // Case insensitive email check
 
             let user = await User.findOne({ email: lowerCaseEmail });
             if (user) return res.status(400).json({ message: "User already exists" });
 
             const hashedPassword = await bcrypt.hash(password, 10);
-            user = new User({ name, email: lowerCaseEmail, password: hashedPassword, role });
+            user = new User({ 
+                name, 
+                email: lowerCaseEmail, 
+                password: hashedPassword, 
+                role: "admin"  // Automatically set as admin
+            });
             await user.save();
 
-            res.status(201).json({ message: "User registered successfully" });
+            res.status(201).json({ message: "User registered successfully", user });
         } catch (error) {
-            console.error(error);
+            console.error("⛔ Signup Error:", error.message);
             res.status(500).json({ message: "Server error", error: error.message });
         }
     }
 );
+
 
 // 🔵 Login User
 router.post(
@@ -55,33 +59,40 @@ router.post(
 
         try {
             const { email, password } = req.body;
-            const user = await User.findOne({ email: email.toLowerCase() }); // Case insensitive search
+            console.log("🟢 Login Attempt:", { email, password });
 
-            if (!user) return res.status(400).json({ message: "Invalid credentials" });
+            const user = await User.findOne({ email: email.toLowerCase() });
+            if (!user) {
+                console.log("⛔ User not found:", email);
+                return res.status(400).json({ message: "Invalid credentials" });
+            }
+
+            console.log("✅ User found:", user.email, "Stored Hash:", user.password);
 
             const isMatch = await bcrypt.compare(password, user.password);
-            if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+            console.log("🔍 Password Match:", isMatch);
 
-            // 🔹 Ensure JWT_SECRET is set
+            if (!isMatch) {
+                console.log("⛔ Incorrect password for:", email);
+                return res.status(400).json({ message: "Invalid credentials" });
+            }
+
             if (!process.env.JWT_SECRET) {
+                console.log("⛔ JWT_SECRET is missing in .env");
                 return res.status(500).json({ message: "JWT_SECRET is missing from environment variables" });
             }
 
-            // ✅ Fix: Store `userId` instead of `id`
             const token = jwt.sign(
                 { userId: user._id, role: user.role },
                 process.env.JWT_SECRET,
-                { expiresIn: "1h" }
+                { expiresIn: "6h" }
             );
+
+            console.log("✅ Login successful for:", email);
 
             res.json({ 
                 token, 
-                user: { 
-                    id: user._id, 
-                    name: user.name, 
-                    email: user.email, 
-                    role: user.role 
-                } 
+                user: { id: user._id, name: user.name, email: user.email, role: user.role } 
             });
         } catch (error) {
             console.error("⛔ Login Error:", error.message);

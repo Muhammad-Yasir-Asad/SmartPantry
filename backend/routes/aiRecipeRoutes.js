@@ -31,7 +31,7 @@ router.post("/generate-recipes", authMiddleware, async (req, res) => {
                 }
             ],
             provider: "together",
-            max_tokens: 500,
+            max_tokens: 1000,
         });
 
         console.log("Response received from Hugging Face API:", chatCompletion.choices[0].message);
