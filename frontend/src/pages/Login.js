@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { FaEnvelope, FaLock, FaGoogle } from "react-icons/fa"; // ✅ Import icons
+import { FaEnvelope, FaLock } from "react-icons/fa"; // ✅ Import icons
 import { motion } from "framer-motion"; // ✅ Import animation library
 import "./Login.css"; // ✅ Import styles
 
@@ -30,9 +30,6 @@ const Login = ({ setIsAuthenticated }) => {
     }
   };
 
-  const handleGoogleAuth = () => {
-    window.location.href = `${process.env.REACT_APP_BACKEND_URL}/auth/google`;
-  };
 
   return (
     <div className="login-container">
@@ -61,17 +58,6 @@ const Login = ({ setIsAuthenticated }) => {
             Login
           </motion.button>
         </form>
-
-        <motion.button
-          disabled
-          onClick={handleGoogleAuth}
-          className="btn-google"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <FaGoogle className="google-icon" />
-          Sign in with Google
-        </motion.button>
 
         <p className="signup-text">
           Don't have an account? <Link to="/signup" className="signup-link">Sign up</Link>

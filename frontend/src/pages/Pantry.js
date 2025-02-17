@@ -13,14 +13,60 @@ const Pantry = () => {
     const { transcript, listening, resetTranscript } = useSpeechRecognition();
 
     useEffect(() => {
-        fetchItems();
-    }, []);
-
-    useEffect(() => {
+        // Handle Voice Commands inside useEffect
+        const handleVoiceCommand = async (command) => {
+            const words = command.split(" ");
+    
+            if (command.includes("add")) {
+                const quantity = parseInt(words[words.indexOf("add") + 1]) || 1;
+                const name = words.slice(words.indexOf("add") + 2).join(" ");  // Get the item name
+                const category = "voice added";  // Set category to 'voice added'
+                
+                // Get tomorrow's date
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);  // Add 1 day to the current date
+                const expirationDate = tomorrow.toISOString().split('T')[0];  // Format as 'yyyy-MM-dd'
+    
+                if (!name) return alert("❌ Could not recognize the item name.");
+    
+                const token = localStorage.getItem("token");
+                await addPantryItem({ name, quantity, expirationDate, category }, token);
+                alert(`✅ Added ${quantity} ${name} in ${category} (Expires: ${expirationDate})`);
+                fetchItems();
+            } 
+    
+            else if (command.includes("update")) {
+                const name = words.slice(words.indexOf("update") + 1).join(" ");
+                const item = items.find(item => item.name.toLowerCase() === name);
+                if (!item) return alert("❌ Item not found.");
+    
+                setEditingItem(item);
+                alert(`✏️ Editing ${name}`);
+            }
+    
+            else if (command.includes("remove")) {
+                const name = words.slice(words.indexOf("remove") + 1).join(" ");
+                const item = items.find(item => item.name.toLowerCase() === name);
+                if (!item) return alert("❌ Item not found.");
+    
+                const token = localStorage.getItem("token");
+                await deletePantryItem(item._id, token);
+                alert(`✅ Removed ${name}`);
+                fetchItems();
+            }
+    
+            resetTranscript();
+        };
+    
+        // Effect to handle the transcript when it changes
         if (transcript) {
             handleVoiceCommand(transcript.toLowerCase());
         }
-    }, [transcript]);
+    }, [transcript, items, resetTranscript]);  // Added resetTranscript to the dependencies
+    
+    useEffect(() => {
+        fetchItems();
+    }, []);
 
     // Fetch pantry items
     const fetchItems = async () => {
@@ -51,47 +97,6 @@ const Pantry = () => {
         fetchItems();
     };
 
-    // Handle Voice Commands
-    const handleVoiceCommand = async (command) => {
-        const words = command.split(" ");
-
-        if (command.includes("add")) {
-            const quantity = parseInt(words[words.indexOf("add") + 1]) || 1;
-            const name = words.slice(words.indexOf("add") + 2, words.indexOf("in")).join(" ");
-            const category = words.includes("in") ? words[words.indexOf("in") + 1] : "Uncategorized";
-            const expirationDate = words.includes("expiry") ? words[words.indexOf("expiry") + 1] : "2025-12-31";
-
-            if (!name) return alert("❌ Could not recognize the item name.");
-
-            const token = localStorage.getItem("token");
-            await addPantryItem({ name, quantity, expirationDate, category }, token);
-            alert(`✅ Added ${quantity} ${name} in ${category} (Expires: ${expirationDate})`);
-            fetchItems();
-        } 
-
-        else if (command.includes("update")) {
-            const name = words.slice(words.indexOf("update") + 1).join(" ");
-            const item = items.find(item => item.name.toLowerCase() === name);
-            if (!item) return alert("❌ Item not found.");
-
-            setEditingItem(item);
-            alert(`✏️ Editing ${name}`);
-        }
-
-        else if (command.includes("remove")) {
-            const name = words.slice(words.indexOf("remove") + 1).join(" ");
-            const item = items.find(item => item.name.toLowerCase() === name);
-            if (!item) return alert("❌ Item not found.");
-
-            const token = localStorage.getItem("token");
-            await deletePantryItem(item._id, token);
-            alert(`✅ Removed ${name}`);
-            fetchItems();
-        }
-
-        resetTranscript();
-    };
-
     return (
         <div className="container">
             <h2 className="title">Pantry Management</h2>
@@ -111,7 +116,7 @@ const Pantry = () => {
                         type="text" 
                         placeholder="Item Name" 
                         value={editingItem ? editingItem.name : newItem.name} 
-                        onChange={(e) => editingItem ? setEditingItem({ ...editingItem, name: e.target.value }) : setNewItem({ ...newItem, name: e.target.value })}
+                        onChange={(e) => editingItem ? setEditingItem({ ...editingItem, name: e.target.value }) : setNewItem({ ...newItem, name: e.target.value })} 
                         required 
                     />
                     <input 

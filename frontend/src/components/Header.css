@@ -37,7 +37,7 @@ header {
     text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.3); /* Glow effect */
 }
 
-.logo :hover{
+.logo:hover {
     color: #00aaff; /* Light blue on hover */
     text-shadow: 0px 0px 10px rgba(0, 170, 255, 0.7);
 }
@@ -46,7 +46,7 @@ header {
 .nav-links {
     display: flex; /* ✅ Links are now horizontal */
     list-style: none;
-    gap: 5rem; /* Space between links */
+    gap: 3rem; /* Space between links */
     margin: 0;
     padding: 0;
     align-items: center;
@@ -54,12 +54,15 @@ header {
 
 /* 🔹 Individual Link */
 .nav-links a {
+    display: flex;
+    align-items: center; /* Align text and icon */
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     text-decoration: none;
     color: white;
     font-size: 1.2rem;
     transition: 0.3s;
     position: relative;
+    gap: 8px; /* Space between icon and text */
 }
 
 /* Hover Effect - Neon Glow */
@@ -70,6 +73,8 @@ header {
 
 /* 🔹 Logout Button - Glossy Style */
 .auth-btn {
+    display: flex;
+    align-items: center;
     background: linear-gradient(135deg, #00aaff, #0088cc);
     color: white;
     padding: 0.5rem 1rem;
@@ -79,17 +84,59 @@ header {
     cursor: pointer;
     transition: 0.3s;
     box-shadow: 0px 4px 10px rgba(0, 170, 255, 0.5); /* Soft glow */
+    gap: 8px; /* Space between icon and text */
 }
 
 /* Hover Effect */
-.logout-btn:hover {
+.auth-btn:hover {
     background: linear-gradient(135deg, #0088cc, #0066aa);
     box-shadow: 0px 6px 15px rgba(0, 170, 255, 0.7); /* Stronger glow */
 }
 
+/* 🔹 Mobile Menu (Hamburger Icon) */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.hamburger .bar {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    border-radius: 5px;
+}
+
 /* 🔹 Responsive Design */
 @media (max-width: 768px) {
+    .navbar {
+        justify-content: space-between;
+    }
+
+    .logo {
+        padding-left: 20px; /* Adjust logo padding for mobile */
+        font-size: 1.2rem; /* Make logo smaller on mobile */
+    }
+
     .nav-links {
         display: none; /* Hide links on small screens */
+        width: 100%;
+        flex-direction: column; /* Stack links vertically */
+        position: absolute;
+        top: 80px; /* Position the links below the header */
+        left: 0;
+        background: rgba(60, 60, 117, 0.9);
+        text-align: center;
+        padding: 1rem 0;
+    }
+
+    /* Show links when menu is active */
+    .nav-links.active {
+        display: flex;
+    }
+
+    .hamburger {
+        display: flex; /* Show hamburger icon on small screens */
     }
 }

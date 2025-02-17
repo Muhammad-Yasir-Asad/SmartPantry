@@ -19,43 +19,37 @@ const SpeechRecognitionComponent = () => {
     if (command.includes("add")) {
       const name = words[words.indexOf("add") + 1]; // Get item name
       const quantity = parseInt(words[words.indexOf("quantity") + 1]) || 1; // Get quantity
-      
+
+      // Log the command for debugging
+      console.log("Command: ", command);
+      console.log("Adding item: ", name, quantity);
+
       try {
         const token = localStorage.getItem("token");
+        console.log("Token: ", token);  // Log the token for debugging
+
+        if (!token) {
+          alert("❌ No token found. Please login.");
+          return;
+        }
+
+        // Sending the POST request to add the item
         const res = await axios.post(
-          "http://localhost:5000/api/pantry",
+          "http://localhost:5000/api/pantry", // Make sure your backend is running at this URL
           { name, quantity, expirationDate: "2025-12-31" },
           { headers: { Authorization: `Bearer ${token}` } }
         );
+
+        console.log("Response: ", res);  // Log response for debugging
         alert(`✅ Added ${quantity} ${name} to inventory`);
       } catch (error) {
         console.error("Error:", error.response?.data || error.message);
         alert("❌ Failed to add item.");
       }
-    } 
-    else if (command.includes("remove")) {
-      const name = words[words.indexOf("remove") + 1];
-      if (!name) return alert("Item name not recognized.");
-
-      try {
-        const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/api/pantry", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const item = res.data.find((item) => item.name.toLowerCase() === name);
-        
-        if (!item) return alert("Item not found.");
-        
-        await axios.delete(`http://localhost:5000/api/pantry/${item._id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        alert(`✅ Removed ${name} from inventory`);
-      } catch (error) {
-        console.error("Error:", error.response?.data || error.message);
-        alert("❌ Failed to remove item.");
-      }
     }
-    resetTranscript(); // Clear the transcript
+    // Handle other voice commands, e.g., remove
+
+    resetTranscript(); // Clear the transcript after processing
   };
 
   if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
