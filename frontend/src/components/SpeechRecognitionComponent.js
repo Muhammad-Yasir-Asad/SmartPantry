@@ -20,8 +20,6 @@ const SpeechRecognitionComponent = () => {
       const name = words[words.indexOf("add") + 1]; // Get item name
       const quantity = parseInt(words[words.indexOf("quantity") + 1]) || 1; // Get quantity
       
-      if (!name) return alert("Item name not recognized.");
-      
       try {
         const token = localStorage.getItem("token");
         const res = await axios.post(

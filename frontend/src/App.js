@@ -1,70 +1,88 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import axios from "axios";
 import Pantry from "./pages/Pantry";
 import Recipes from "./pages/Recipes";
 import Notifications from "./pages/Notifications";
 import Home from "./pages/Home";
-import AIRecipe from "./components/AIRecipe";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import { Link } from "react-router-dom";
+import Header from "./components/Header";
+import confetti from "canvas-confetti";
+import "./App.css";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const cursorRef = useRef(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
 
+  // 🖱️ Custom Cursor & Particle Effect
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      setIsAuthenticated(true);
-    }
-  }, [isAuthenticated]); // ✅ React to changes in `isAuthenticated`
+    const moveCursor = (e) => {
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+      }
+      confetti({
+        particleCount: 1,
+        startVelocity: 0,
+        ticks: 0,
+        origin: {
+          x: e.clientX / window.innerWidth,
+          y: e.clientY / window.innerHeight,
+        },
+        colors: ["#ffffff"],
+        shapes: ["circle"],
+        gravity: 1.8,
+        scalar: 0.8,
+        drift: (Math.random() - 0.5) * 0.2,
+      });
+    };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    delete axios.defaults.headers.common["Authorization"];
-    setIsAuthenticated(false);
+    window.addEventListener("mousemove", moveCursor);
+    return () => window.removeEventListener("mousemove", moveCursor);
+  }, []);
+
+  // 🚀 Login/Logout Handler
+  const handleAuthAction = () => {
+    if (isAuthenticated) {
+      localStorage.removeItem("token");
+      setIsAuthenticated(false);
+      window.location.href = "/login"; // Redirect after logout
+    } else {
+      window.location.href = "/login"; // Redirect to login page
+    }
+  };
+
+  // 🔒 Protected Route Component (Restricts Access to Certain Pages)
+  const ProtectedRoute = ({ element }) => {
+    return isAuthenticated ? element : <Navigate to="/login" replace />;
   };
 
   return (
     <Router>
-      <div>
-        {isAuthenticated && <Header onLogout={handleLogout} />}
+      <div className="app-container">
+        {/* 🎯 Custom Cursor */}
+        <div ref={cursorRef} className="custom-cursor"></div>
+
+        {/* ✅ Always Show Header, Pass Dynamic Button State */}
+        <Header onAuthAction={handleAuthAction} isAuthenticated={isAuthenticated} />
+
+        {/* ✅ Routes */}
         <Routes>
-          <Route path="/" element={isAuthenticated ? <Navigate to="/home" replace /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
           <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} />} />
 
-          {isAuthenticated ? (
-            <>
-              <Route path="/home" element={<Home />} />
-              <Route path="/pantry" element={<Pantry />} />
-              <Route path="/recipes" element={<Recipes />} />
-              <Route path="/notifications" element={<Notifications />} />
-              <Route path="/ai-recipe" element={<AIRecipe />} />
-            </>
-          ) : (
-            <Route path="*" element={<Navigate to="/" replace />} />
-          )}
+          {/* 🏠 Home Page is Public */}
+          <Route path="/home" element={<Home />} />
+
+          {/* 🔐 Protected Routes (Only accessible if authenticated) */}
+          <Route path="/pantry" element={<ProtectedRoute element={<Pantry />} />} />
+          <Route path="/recipes" element={<ProtectedRoute element={<Recipes />} />} />
+          <Route path="/notifications" element={<ProtectedRoute element={<Notifications />} />} />
+
+          {/* 🛑 Redirect all unknown routes to /home */}
+          <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
       </div>
     </Router>
-  );
-}
-
-function Header({ onLogout }) {
-  return (
-    <header>
-      <h1>Smart Pantry</h1>
-      <nav>
-        <Link to="/home">Home</Link>
-        <Link to="/pantry">Pantry</Link>
-        <Link to="/recipes">Recipes</Link>
-        <Link to="/notifications">Notifications</Link>
-        <Link to="/ai-recipe">AI Recipe</Link>
-        <button className="logout-btn" onClick={onLogout}>Logout</button>
-      </nav>
-    </header>
   );
 }
 

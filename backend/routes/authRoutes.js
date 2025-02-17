@@ -10,6 +10,7 @@ dotenv.config(); // Load environment variables
 
 const router = express.Router();
 
+// Register User
 router.post(
     "/register",
     [
@@ -37,7 +38,18 @@ router.post(
             });
             await user.save();
 
-            res.status(201).json({ message: "User registered successfully", user });
+            // Issue a JWT token
+            const token = jwt.sign(
+                { userId: user._id, role: user.role },
+                process.env.JWT_SECRET,
+                { expiresIn: "7d" }
+            );
+
+            res.status(201).json({
+                message: "User registered successfully",
+                token, // Return the token
+                user: { id: user._id, name: user.name, email: user.email, role: user.role }
+            });
         } catch (error) {
             console.error("⛔ Signup Error:", error.message);
             res.status(500).json({ message: "Server error", error: error.message });
@@ -85,7 +97,7 @@ router.post(
             const token = jwt.sign(
                 { userId: user._id, role: user.role },
                 process.env.JWT_SECRET,
-                { expiresIn: "6h" }
+                { expiresIn: "7d" }
             );
 
             console.log("✅ Login successful for:", email);

@@ -1,0 +1,141 @@
+/* 🔹 Background Styling */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: radial-gradient(circle, #0e0e24, #4B4B84);
+    font-family: "Poppins", sans-serif;
+}
+
+/* 🔹 Login Box */
+.login-box {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 350px;
+    color: white;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.login-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 12px 35px rgba(0, 0, 0, 0.4);
+}
+
+/* 🔹 Title */
+.login-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* 🔹 Input Fields */
+.input-group {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    transition: 0.3s;
+    border: 2px solid transparent; /* Default border */
+}
+
+/* 🔥 Input Focus Effect */
+.input-group input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    color: white;
+    font-size: 1rem;
+    margin-left: 10px;
+}
+
+.input-group:focus-within {
+    border: 2px solid #ff8c42;
+    box-shadow: 0 0 10px rgba(255, 140, 66, 0.6);
+    transform: scale(1.02);
+}
+
+/* 🔹 Icons */
+.icon {
+    color: white;
+    font-size: 1.2rem;
+}
+
+/* 🔹 Buttons */
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    background: #ff8c42;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.btn-primary:hover {
+    background: #e67e22;
+    transform: scale(1.05);
+}
+
+.btn-primary:active {
+    transform: scale(0.95);
+}
+
+/* 🔹 Google Login Button */
+.btn-google {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    background: white;
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: bold;
+    transition: background 0.3s, transform 0.3s;
+}
+
+/* 🔥 Google Button Hover Effect */
+.btn-google:hover {
+    background: #e0e0e0;
+    transform: scale(1.05);
+}
+
+.btn-google:active {
+    transform: scale(0.95);
+}
+
+/* 🔹 Google Icon */
+.google-icon {
+    font-size: 1.2rem;
+}
+
+/* 🔹 Sign Up Link */
+.signup-text {
+    margin-top: 15px;
+    font-size: 0.9rem;
+}
+
+.signup-link {
+    color: #ff8c42;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.signup-link:hover {
+    text-decoration: underline;
+}

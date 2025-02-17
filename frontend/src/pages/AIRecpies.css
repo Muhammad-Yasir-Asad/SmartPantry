@@ -1,0 +1,124 @@
+/* Container */
+.ai-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #f4f4f4;
+    padding: 20px;
+  }
+  
+  /* Card */
+  .ai-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  /* Title */
+  .ai-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .ai-icon {
+    color: #ff5722;
+    font-size: 28px;
+  }
+  
+  /* Subtitle */
+  .ai-subtitle {
+    color: #666;
+    margin-top: 8px;
+  }
+  
+  /* Buttons */
+  .ai-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    border: none;
+  }
+  
+  /* Primary Button */
+  .ai-primary {
+    background: #007bff;
+    color: white;
+  }
+  
+  .ai-primary:hover {
+    background: #0056b3;
+  }
+  
+  /* Cancel Button */
+  .ai-cancel {
+    background: #ff3b3b;
+    color: white;
+    margin-top: 10px;
+  }
+  
+  .ai-cancel:hover {
+    background: #c90000;
+  }
+  
+  /* Loading Spinner */
+  .ai-spin {
+    animation: ai-spin 1s linear infinite;
+  }
+  
+  @keyframes ai-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Recipe Box */
+  .ai-recipe-box {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+    text-align: left;
+  }
+  
+  .ai-recipe-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* Recipe List */
+  .ai-recipe-list {
+    list-style: none;
+    padding-left: 10px;
+  }
+  
+  .ai-recipe-item {
+    padding: 8px 0;
+    color: #555;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* Error Message */
+  .ai-error {
+    color: red;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  

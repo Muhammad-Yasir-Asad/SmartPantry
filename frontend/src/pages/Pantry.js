@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { getPantryItems, addPantryItem, updatePantryItem, deletePantryItem } from "../services/api";
 import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
-import "../styles/Pantry.css"; // Import styles
+import "./Pantry.css"; // Import styles
+import { FaMicrophone, FaEdit, FaTrash, FaPlus, FaSync, FaTimes } from "react-icons/fa";
 
 const Pantry = () => {
     const [items, setItems] = useState([]);
@@ -28,21 +29,18 @@ const Pantry = () => {
         setItems(response.data);
     };
 
-    // Add pantry item
-    const handleAdd = async (e) => {
+    // Handle Add / Edit
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem("token");
-        await addPantryItem(newItem, token);
-        setNewItem({ name: "", quantity: 1, expirationDate: "", category: "" });
-        fetchItems();
-    };
 
-    // Update pantry item
-    const handleUpdate = async (e) => {
-        e.preventDefault();
-        const token = localStorage.getItem("token");
-        await updatePantryItem(editingItem._id, editingItem, token);
-        setEditingItem(null);
+        if (editingItem) {
+            await updatePantryItem(editingItem._id, editingItem, token);
+            setEditingItem(null);
+        } else {
+            await addPantryItem(newItem, token);
+            setNewItem({ name: "", quantity: 1, expirationDate: "", category: "" });
+        }
         fetchItems();
     };
 
@@ -59,33 +57,29 @@ const Pantry = () => {
 
         if (command.includes("add")) {
             const quantity = parseInt(words[words.indexOf("add") + 1]) || 1;
-            const name = words.slice(words.indexOf("add") + 2).join(" ");
+            const name = words.slice(words.indexOf("add") + 2, words.indexOf("in")).join(" ");
+            const category = words.includes("in") ? words[words.indexOf("in") + 1] : "Uncategorized";
+            const expirationDate = words.includes("expiry") ? words[words.indexOf("expiry") + 1] : "2025-12-31";
+
             if (!name) return alert("❌ Could not recognize the item name.");
 
             const token = localStorage.getItem("token");
-            await addPantryItem({ name, quantity, expirationDate: "2025-12-31", category: "Voice Added" }, token);
-            alert(`✅ Added ${quantity} ${name}`);
+            await addPantryItem({ name, quantity, expirationDate, category }, token);
+            alert(`✅ Added ${quantity} ${name} in ${category} (Expires: ${expirationDate})`);
             fetchItems();
-        }
+        } 
 
         else if (command.includes("update")) {
-            const quantity = parseInt(words[words.indexOf("update") + 1]) || 1;
-            const name = words.slice(words.indexOf("update") + 2).join(" ");
-            if (!name) return alert("❌ Could not recognize the item name.");
-
+            const name = words.slice(words.indexOf("update") + 1).join(" ");
             const item = items.find(item => item.name.toLowerCase() === name);
             if (!item) return alert("❌ Item not found.");
 
-            const token = localStorage.getItem("token");
-            await updatePantryItem(item._id, { ...item, quantity }, token);
-            alert(`✅ Updated ${name} quantity to ${quantity}`);
-            fetchItems();
+            setEditingItem(item);
+            alert(`✏️ Editing ${name}`);
         }
 
         else if (command.includes("remove")) {
             const name = words.slice(words.indexOf("remove") + 1).join(" ");
-            if (!name) return alert("❌ Could not recognize the item name.");
-
             const item = items.find(item => item.name.toLowerCase() === name);
             if (!item) return alert("❌ Item not found.");
 
@@ -95,7 +89,7 @@ const Pantry = () => {
             fetchItems();
         }
 
-        resetTranscript(); // Clear transcript after processing command
+        resetTranscript();
     };
 
     return (
@@ -106,19 +100,42 @@ const Pantry = () => {
             <div className="voice-section">
                 <p>🎤 {listening ? "Listening..." : "Click to Start Voice Command"}</p>
                 <p className="transcript">Recognized: {transcript}</p>
-                <button onClick={SpeechRecognition.startListening} className="button">Start Listening</button>
-                <button onClick={resetTranscript} className="button cancel">Reset</button>
+                <button onClick={SpeechRecognition.startListening} className="button"><FaMicrophone /> Start Listening</button>
+                <button onClick={resetTranscript} className="button cancel"><FaSync /> Reset</button>
             </div>
 
-            {/* Add Item Form */}
+            {/* Add/Edit Item Form */}
             <div className="form-container">
-                <form onSubmit={editingItem ? handleUpdate : handleAdd}>
-                    <input type="text" placeholder="Item Name" value={editingItem ? editingItem.name : newItem.name} onChange={(e) => editingItem ? setEditingItem({ ...editingItem, name: e.target.value }) : setNewItem({ ...newItem, name: e.target.value })} required />
-                    <input type="number" placeholder="Quantity" value={editingItem ? editingItem.quantity : newItem.quantity} onChange={(e) => editingItem ? setEditingItem({ ...editingItem, quantity: e.target.value }) : setNewItem({ ...newItem, quantity: e.target.value })} required />
-                    <input type="date" value={editingItem ? editingItem.expirationDate : newItem.expirationDate} onChange={(e) => editingItem ? setEditingItem({ ...editingItem, expirationDate: e.target.value }) : setNewItem({ ...newItem, expirationDate: e.target.value })} required />
-                    <input type="text" placeholder="Category" value={editingItem ? editingItem.category : newItem.category} onChange={(e) => editingItem ? setEditingItem({ ...editingItem, category: e.target.value }) : setNewItem({ ...newItem, category: e.target.value })} required />
-                    <button type="submit" className="button">{editingItem ? "Update Item" : "Add Item"}</button>
-                    {editingItem && <button className="button cancel" onClick={() => setEditingItem(null)}>Cancel</button>}
+                <form onSubmit={handleSubmit}>
+                    <input 
+                        type="text" 
+                        placeholder="Item Name" 
+                        value={editingItem ? editingItem.name : newItem.name} 
+                        onChange={(e) => editingItem ? setEditingItem({ ...editingItem, name: e.target.value }) : setNewItem({ ...newItem, name: e.target.value })}
+                        required 
+                    />
+                    <input 
+                        type="number" 
+                        placeholder="Quantity" 
+                        value={editingItem ? editingItem.quantity : newItem.quantity} 
+                        onChange={(e) => editingItem ? setEditingItem({ ...editingItem, quantity: e.target.value }) : setNewItem({ ...newItem, quantity: e.target.value })}
+                        required 
+                    />
+                    <input 
+                        type="date" 
+                        value={editingItem ? editingItem.expirationDate : newItem.expirationDate} 
+                        onChange={(e) => editingItem ? setEditingItem({ ...editingItem, expirationDate: e.target.value }) : setNewItem({ ...newItem, expirationDate: e.target.value })}
+                        required 
+                    />
+                    <input 
+                        type="text" 
+                        placeholder="Category" 
+                        value={editingItem ? editingItem.category : newItem.category} 
+                        onChange={(e) => editingItem ? setEditingItem({ ...editingItem, category: e.target.value }) : setNewItem({ ...newItem, category: e.target.value })}
+                        required 
+                    />
+                    <button type="submit" className="button">{editingItem ? <><FaEdit /> Update Item</> : <><FaPlus /> Add Item</>}</button>
+                    {editingItem && <button className="button cancel" onClick={() => setEditingItem(null)}><FaTimes /> Cancel</button>}
                 </form>
             </div>
 
@@ -131,8 +148,8 @@ const Pantry = () => {
                         <p>Category: {item.category}</p>
                         <p className="expire">Expires: {item.expirationDate}</p>
                         <div className="buttons">
-                            <button className="button edit" onClick={() => setEditingItem(item)}>Edit</button>
-                            <button className="button delete" onClick={() => handleDelete(item._id)}>Delete</button>
+                            <button className="button edit" onClick={() => setEditingItem(item)}><FaEdit /> Edit</button>
+                            <button className="button delete" onClick={() => handleDelete(item._id)}><FaTrash /> Delete</button>
                         </div>
                     </div>
                 ))}

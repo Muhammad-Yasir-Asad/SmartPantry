@@ -3,6 +3,7 @@ import { InferenceOutputError } from "../../lib/InferenceOutputError";
 import type { BaseArgs, InferenceProvider, Options } from "../../types";
 import { omit } from "../../utils/omit";
 import { request } from "../custom/request";
+import { delay } from "../../utils/delay";
 
 export type TextToImageArgs = BaseArgs & TextToImageInput;
 
@@ -13,6 +14,14 @@ interface Base64ImageGeneration {
 }
 interface OutputUrlImageGeneration {
 	output: string[];
+}
+interface HyperbolicTextToImageOutput {
+	images: Array<{ image: string }>;
+}
+
+interface BlackForestLabsResponse {
+	id: string;
+	polling_url: string;
 }
 
 function getResponseFormatArg(provider: InferenceProvider) {
@@ -44,15 +53,35 @@ export async function textToImage(args: TextToImageArgs, options?: Options): Pro
 					...getResponseFormatArg(args.provider),
 					prompt: args.inputs,
 			  };
-	const res = await request<TextToImageOutput | Base64ImageGeneration | OutputUrlImageGeneration>(payload, {
+	const res = await request<
+		| TextToImageOutput
+		| Base64ImageGeneration
+		| OutputUrlImageGeneration
+		| BlackForestLabsResponse
+		| HyperbolicTextToImageOutput
+	>(payload, {
 		...options,
 		taskHint: "text-to-image",
 	});
 
 	if (res && typeof res === "object") {
+		if (args.provider === "black-forest-labs" && "polling_url" in res && typeof res.polling_url === "string") {
+			return await pollBflResponse(res.polling_url);
+		}
 		if (args.provider === "fal-ai" && "images" in res && Array.isArray(res.images) && res.images[0].url) {
 			const image = await fetch(res.images[0].url);
 			return await image.blob();
+		}
+		if (
+			args.provider === "hyperbolic" &&
+			"images" in res &&
+			Array.isArray(res.images) &&
+			res.images[0] &&
+			typeof res.images[0].image === "string"
+		) {
+			const base64Response = await fetch(`data:image/jpeg;base64,${res.images[0].image}`);
+			const blob = await base64Response.blob();
+			return blob;
 		}
 		if ("data" in res && Array.isArray(res.data) && res.data[0].b64_json) {
 			const base64Data = res.data[0].b64_json;
@@ -71,4 +100,34 @@ export async function textToImage(args: TextToImageArgs, options?: Options): Pro
 		throw new InferenceOutputError("Expected Blob");
 	}
 	return res;
+}
+
+async function pollBflResponse(url: string): Promise<Blob> {
+	const urlObj = new URL(url);
+	for (let step = 0; step < 5; step++) {
+		await delay(1000);
+		console.debug(`Polling Black Forest Labs API for the result... ${step + 1}/5`);
+		urlObj.searchParams.set("attempt", step.toString(10));
+		const resp = await fetch(urlObj, { headers: { "Content-Type": "application/json" } });
+		if (!resp.ok) {
+			throw new InferenceOutputError("Failed to fetch result from black forest labs API");
+		}
+		const payload = await resp.json();
+		if (
+			typeof payload === "object" &&
+			payload &&
+			"status" in payload &&
+			typeof payload.status === "string" &&
+			payload.status === "Ready" &&
+			"result" in payload &&
+			typeof payload.result === "object" &&
+			payload.result &&
+			"sample" in payload.result &&
+			typeof payload.result.sample === "string"
+		) {
+			const image = await fetch(payload.result.sample);
+			return await image.blob();
+		}
+	}
+	throw new InferenceOutputError("Failed to fetch result from black forest labs API");
 }

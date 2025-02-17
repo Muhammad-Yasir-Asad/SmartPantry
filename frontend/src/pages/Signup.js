@@ -1,25 +1,35 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
+import { motion } from "framer-motion";
+import "./Signup.css";
 
-function Signup({ setIsAuthenticated }) {
+const Signup = ({ setIsAuthenticated }) => {
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
+  const [focusedField, setFocusedField] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleFocus = (field) => {
+    setFocusedField(field);
+  };
+
+  const handleBlur = () => {
+    setFocusedField(null);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("🟢 Sending Signup Data:", formData); // Debugging
-
+      console.log("🟢 Sending Signup Data:", formData);
       const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/register`, formData);
-      
-      console.log("✅ Signup Response:", res.data); // Debugging
 
+      console.log("✅ Signup Response:", res.data);
       localStorage.setItem("token", res.data.token);
       setIsAuthenticated(true);
       navigate("/home");
@@ -30,20 +40,73 @@ function Signup({ setIsAuthenticated }) {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h2 className="text-2xl font-bold text-center mb-4">Sign Up</h2>
-        {error && <p className="text-red-500 text-center">{error}</p>}
+    <div className="signup-container">
+      <motion.div
+        className="signup-box"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <h2 className="signup-title">🔐 Create an Account</h2>
+
+        {error && <p className="error-message">{error}</p>}
+
         <form onSubmit={handleSubmit}>
-          <input type="text" name="name" placeholder="Full Name" className="w-full p-2 mb-3 border rounded" onChange={handleChange} required />
-          <input type="email" name="email" placeholder="Email" className="w-full p-2 mb-3 border rounded" onChange={handleChange} required />
-          <input type="password" name="password" placeholder="Password" className="w-full p-2 mb-3 border rounded" onChange={handleChange} required />
-          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Sign Up</button>
+          <div className={`input-group ${focusedField === "name" ? "focused" : ""}`}>
+            <FaUser className="icon" />
+            <input
+              type="text"
+              name="name"
+              placeholder="Full Name"
+              onChange={handleChange}
+              onFocus={() => handleFocus("name")}
+              onBlur={handleBlur}
+              required
+            />
+          </div>
+
+          <div className={`input-group ${focusedField === "email" ? "focused" : ""}`}>
+            <FaEnvelope className="icon" />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              onChange={handleChange}
+              onFocus={() => handleFocus("email")}
+              onBlur={handleBlur}
+              required
+            />
+          </div>
+
+          <div className={`input-group ${focusedField === "password" ? "focused" : ""}`}>
+            <FaLock className="icon" />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              onChange={handleChange}
+              onFocus={() => handleFocus("password")}
+              onBlur={handleBlur}
+              required
+            />
+          </div>
+
+          <motion.button
+            type="submit"
+            className="btn-primary"
+            whileHover={{ scale: 1.05, backgroundColor: "#e67e22" }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Sign Up
+          </motion.button>
         </form>
-        <p className="text-center mt-3">Already have an account? <a href="/" className="text-blue-500">Login</a></p>
-      </div>
+
+        <p className="signup-text">
+          Already have an account? <a href="/" className="signup-link">Login</a>
+        </p>
+      </motion.div>
     </div>
   );
-}
+};
 
 export default Signup;

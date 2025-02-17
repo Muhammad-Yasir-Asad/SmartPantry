@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { FaUtensils, FaSpinner } from "react-icons/fa"; // Icons for better UI
+import { FaUtensils, FaSpinner, FaMagic, FaTimes } from "react-icons/fa";
+import "./AIRecipes.css"; 
 
-const AIRecipe = () => {
+const Recipes = () => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -10,58 +11,69 @@ const AIRecipe = () => {
   const generateRecipes = async () => {
     setLoading(true);
     setError(null);
-    setRecipes([]); // Clear previous recipes
+    setRecipes([]);
 
     try {
-      const token = localStorage.getItem("token"); // Get authentication token
-      const response = await axios.post(
-        "http://localhost:5000/api/recipes/generate-recipes",
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+        const token = localStorage.getItem("token");  // Retrieve token from localStorage
+        if (!token) {
+            setError("⚠️ You must be logged in to generate recipes.");
+            setLoading(false);
+            return;
+        }
 
-      setRecipes(response.data.content.split("\n").filter(line => line.trim() !== ""));
+        const response = await axios.post(
+            `${process.env.REACT_APP_BACKEND_URL}/recipes/generate-recipes`,
+            {},  // Empty request body (if required)
+            {
+                headers: { Authorization: `Bearer ${token}` }, // Include token
+            }
+        );
+
+        setRecipes(response.data.recipes);
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch recipes.");
+        console.error("Error generating recipes:", err);
+        setError(err.response?.data?.message || "⚠️ Failed to fetch recipes.");
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-      <div className="bg-white shadow-lg rounded-lg p-8 max-w-lg w-full">
-        <h2 className="text-3xl font-bold text-gray-800 text-center flex items-center justify-center gap-2">
-          <FaUtensils className="text-red-500" /> AI Recipe Suggestions
+    <div className="ai-container">
+      <div className="ai-card">
+        <h2 className="ai-title">
+          <FaUtensils className="ai-icon" /> AI Recipe Suggestions
         </h2>
 
-        <p className="text-gray-600 text-center mt-2">
-          Click the button below to get delicious AI-generated meal ideas based on your pantry items.
+        <p className="ai-subtitle">
+          Click below to get meal ideas based on your pantry items.
         </p>
 
         <button
           onClick={generateRecipes}
-          className="w-full bg-blue-500 text-white px-6 py-3 rounded-lg mt-4 font-semibold hover:bg-blue-600 transition-all duration-300 flex items-center justify-center gap-2"
+          className="ai-button ai-primary"
           disabled={loading}
         >
-          {loading ? <FaSpinner className="animate-spin" /> : "Get AI Recipe Ideas"}
+          {loading ? <FaSpinner className="ai-spin" /> : <><FaMagic /> Get AI Recipe Ideas</>}
         </button>
 
-        {error && <p className="text-red-500 text-center mt-3">{error}</p>}
+        {error && <p className="ai-error">{error}</p>}
 
-        {recipes.length > 0 && (
-          <div className="mt-6 bg-gray-50 shadow-md rounded-lg p-4">
-            <h3 className="text-xl font-semibold text-gray-800">Suggested Recipes</h3>
-            <ul className="list-disc pl-6 mt-2 text-gray-700">
-              {recipes.map((recipe, index) => (
-                <li key={index} className="py-1">{recipe}</li>
-              ))}
-            </ul>
+        {recipes && (
+          <div className="ai-recipe-box">
+            <h3 className="ai-recipe-title">Suggested Recipes</h3>
+            <pre className="ai-recipe-content">{recipes}</pre>
           </div>
+        )}
+
+        {recipes && (
+          <button className="ai-button ai-cancel" onClick={() => setRecipes([])}>
+            <FaTimes /> Clear Recipes
+          </button>
         )}
       </div>
     </div>
   );
 };
 
-export default AIRecipe;
+export default Recipes;

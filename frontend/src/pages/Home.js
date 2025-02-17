@@ -1,57 +1,79 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import "./Home.css";
 
-function Home() {
+const Home = () => {
   return (
-    <div className="container">
-      {/* Welcome Banner */}
-      <section className="banner">
-        <h2>Welcome to Kitchen Planner</h2>
-        <p>
-          Plan. Cook. Enjoy! Manage your pantry, discover recipes, and stay notified with ease.
-        </p>
-        <a className="button" href="/pantry">Get Started</a>
-      </section>
-
-      {/* Quick Links Section */}
-      <section>
-        <h2>Quick Links</h2>
-        <div className="grid">
-          <div className="card">
-            <h3>Pantry Management</h3>
-            <p>Track your ingredients and organize your kitchen.</p>
-            <a className="button" href="/pantry">Go to Pantry</a>
-          </div>
-          <div className="card">
-            <h3>Discover Recipes</h3>
-            <p>Find recipes based on what's in your pantry.</p>
-            <a className="button" href="/recipes">Explore Recipes</a>
-          </div>
-          <div className="card">
-            <h3>Notifications</h3>
-            <p>Stay on top of expiry dates and low stock items.</p>
-            <a className="button" href="/notifications">View Notifications</a>
-          </div>
+    <div className="home-container">
+      {/* 🔹 Hero Section */}
+      <section className="hero">
+        <div className="hero-text">
+          <h1>Your Kitchen, Optimized.</h1>
+          <br></br>
+          <p className="hero-text1">Pantry perfection at your fingertips.</p> 
+          <p className="hero-text2">Transform your kitchen management with our intelligent pantry system.</p>
+          <Link to="/pantry" className="btn">Discover!</Link>
+        </div>
+        <div className="hero-image">
+          <img src="assests/hero-image.png" alt="Pantry System" />
         </div>
       </section>
 
-      {/* Featured Recipes Section */}
-      <section>
-        <h2>Featured Recipes</h2>
-        <div className="grid">
-          <div className="card">
-            <h3>Spaghetti Carbonara</h3>
-            <p>A simple and classic Italian pasta dish.</p>
-            <a className="button" href="/recipes">See Recipe</a>
-          </div>
-          <div className="card">
-            <h3>Vegetable Curry</h3>
-            <p>Healthy and flavorful curry with mixed veggies.</p>
-            <a className="button" href="/recipes">See Recipe</a>
-          </div>
-        </div>
+      {/* 🔹 Features Section */}
+      <section className="features">
+  <div className="feature-card left">
+    <img src="assests/pantry-image.png" alt="Kitchen Management" />
+    <div className="feature-content">
+      <h2>🛒 Your Pantry at a Glance</h2>
+      <p className="sp">Know what you have, use what you need, and waste nothing with smart inventory tracking.</p>
+      <p>•✅ Full Control : Create, view, edit, and delete pantry items effortlessly.</p>
+      <p>•🎙️ Voice Recognition : Add products using hands-free voice commands.</p>
+      <p>•🔒 Personalized Storage : Store data securely, linked to your unique user ID.</p>
+      <Link to="/pantry" className="btn">Manage Now</Link>
+    </div>
+  </div>
+
+  <div className="feature-card right">
+    <div className="feature-content">
+      <h2>🍳 Inspire Your Cooking</h2>
+      <p className="sp">Discover delicious meals based on what’s in your pantry and filter recipes.</p>
+      <p>•🍽      AI-Powered Recipe : Get instant meal ideas based on the ingredients.</p>
+      <p>•🛒     Smart Matching : Fetches ingredients from your pantry to generate recipes.</p>
+      <p>•🤖     Meal Planning : No more guessing! Let AI suggest the best recipes for you.</p>
+      <Link to="/recipes" className="btn">Get Recipe</Link>
+    </div>
+    <img src="assests/recipe-img.png" alt="Pantry Glance" />
+  </div>
+
+  <div className="feature-card left">
+    <img src="assests/notification-image.png" alt="Cooking" />
+    <div className="feature-content">
+      <h2>🔔 Smart Notifications</h2>
+      <p className="sp">Never Let Your Ingredients Go to Waste - Stay Ahead with Smart Alerts!</p>
+      <p>•⏳  Expiry Alerts : Get notified when your pantry items are about to expire.</p>
+      <p>•📩  Email Reminders : Receive timely email alerts to keep track of expiring ingredients.</p>
+      <p>•🛑  Reduce Waste, Save Money : Use ingredients before they go bad and cut down on food waste.</p>
+      <Link to="/notifications" className="btn">View Alerts</Link>
+    </div>
+  </div>
+
+ 
+</section>
+
+
+      {/* 🔹 Call to Action */}
+      <section className="cta">
+        <h2>“Be A Part Of The <span className="highlight">Next</span> Big Thing.”</h2>
       </section>
+
+      {/* 🔹 Footer Section */}
+      <footer className="footer">
+  <p>Designed & Developed by <strong className="my-name">Muhammad Yasir Asad (MYA)</strong> | Innovating Smart Solutions for the Future</p>
+</footer>
+
+
     </div>
   );
-}
+};
 
 export default Home;

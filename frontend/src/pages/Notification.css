@@ -1,0 +1,55 @@
+.notifications-container {
+    max-width: 500px;
+    margin: 100px auto;
+    padding: 20px;
+    background: linear-gradient(135deg, #1f2937, #111827);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    color: white;
+    text-align: center;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .loading-text,
+  .error-text {
+    color: #ff4f4f;
+    font-size: 1rem;
+  }
+  
+  .no-items {
+    color: #00c896;
+    font-size: 1.1rem;
+    font-weight: bold;
+  }
+  
+  .notification-card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    margin: 12px 0;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    transition: transform 0.2s, box-shadow 0.3s;
+    border-left: 5px solid #ff4f4f;
+  }
+  
+  .notification-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+  }
+  
+  .item-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .item-date {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+  

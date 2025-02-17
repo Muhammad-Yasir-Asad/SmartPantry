@@ -11,7 +11,8 @@
   "author": "MYA",
   "license": "ISC",
   "dependencies": {
-    "@huggingface/inference": "^3.3.3",
+    "@google/generative-ai": "^0.21.0",
+    "@huggingface/inference": "^3.3.4",
     "axios": "^1.7.9",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",

@@ -5,7 +5,9 @@
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
     "axios": "^1.7.9",
+    "canvas-confetti": "^1.9.3",
     "cra-template": "1.2.0",
+    "framer-motion": "^12.4.3",
     "gsap": "^3.12.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

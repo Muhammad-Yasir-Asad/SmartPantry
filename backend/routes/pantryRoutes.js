@@ -38,7 +38,7 @@ const sendExpirationEmail = async (userEmail, items) => {
 };
 
 // 🕒 Schedule Daily Expiration Check (Runs at 8 AM)
-cron.schedule("* * * * *", async () => {
+cron.schedule("0 8 * * *", async () => {
     console.log("🔍 Running expiration check...");
 
     const today = new Date();

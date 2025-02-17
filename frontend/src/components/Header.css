@@ -1,0 +1,95 @@
+@font-face {
+    font-family: 'MyCustomFont';
+    src: url('../fonts/Belinda-Script.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* 🔹 Navbar Styles - Glossy Effect */
+header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background: rgba(60, 60, 117, 0.7); /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Glassmorphism blur effect */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+    padding: 1rem 5%;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+}
+
+/* 🔹 Navbar Container */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 🔹 Logo */
+.logo {
+    font-family: MyCustomFont;
+    padding-left: 70px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.3); /* Glow effect */
+}
+
+.logo :hover{
+    color: #00aaff; /* Light blue on hover */
+    text-shadow: 0px 0px 10px rgba(0, 170, 255, 0.7);
+}
+
+/* 🔹 Navbar Links */
+.nav-links {
+    display: flex; /* ✅ Links are now horizontal */
+    list-style: none;
+    gap: 5rem; /* Space between links */
+    margin: 0;
+    padding: 0;
+    align-items: center;
+}
+
+/* 🔹 Individual Link */
+.nav-links a {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-decoration: none;
+    color: white;
+    font-size: 1.2rem;
+    transition: 0.3s;
+    position: relative;
+}
+
+/* Hover Effect - Neon Glow */
+.nav-links a:hover {
+    color: #00aaff; /* Light blue on hover */
+    text-shadow: 0px 0px 10px rgba(0, 170, 255, 0.7);
+}
+
+/* 🔹 Logout Button - Glossy Style */
+.auth-btn {
+    background: linear-gradient(135deg, #00aaff, #0088cc);
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0px 4px 10px rgba(0, 170, 255, 0.5); /* Soft glow */
+}
+
+/* Hover Effect */
+.logout-btn:hover {
+    background: linear-gradient(135deg, #0088cc, #0066aa);
+    box-shadow: 0px 6px 15px rgba(0, 170, 255, 0.7); /* Stronger glow */
+}
+
+/* 🔹 Responsive Design */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none; /* Hide links on small screens */
+    }
+}

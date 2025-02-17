@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
-const Login = ({ setIsAuthenticated }) => { // ✅ Accept `setIsAuthenticated` as prop
+import { FaEnvelope, FaLock, FaGoogle } from "react-icons/fa"; // ✅ Import icons
+import { motion } from "framer-motion"; // ✅ Import animation library
+import "./Login.css"; // ✅ Import styles
+
+const Login = ({ setIsAuthenticated }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -16,13 +20,10 @@ const Login = ({ setIsAuthenticated }) => { // ✅ Accept `setIsAuthenticated` a
         { headers: { "Content-Type": "application/json" } }
       );
 
-      console.log("Login Response:", res.data); // Debugging
-
+      console.log("Login Response:", res.data);
       localStorage.setItem("token", res.data.token);
-      setIsAuthenticated(true); // ✅ Update state first
-      console.log("Stored Token:", localStorage.getItem("token"));
-
-      navigate("/home"); // ✅ Then navigate
+      setIsAuthenticated(true);
+      navigate("/home");
     } catch (error) {
       console.error("Login Error:", error.response?.data || error.message);
       alert(error.response?.data?.message || "Invalid credentials");
@@ -34,17 +35,48 @@ const Login = ({ setIsAuthenticated }) => { // ✅ Accept `setIsAuthenticated` a
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-        <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
+    <div className="login-container">
+      <motion.div
+        className="login-box"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <h2 className="login-title">🔑 Welcome Back</h2>
         <form onSubmit={handleLogin}>
-          <input type="email" placeholder="Email" className="input" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <input type="password" placeholder="Password" className="input" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          <button type="submit" className="btn-primary">Login</button>
+          <div className="input-group">
+            <FaEnvelope className="icon" />
+            <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          </div>
+          <div className="input-group">
+            <FaLock className="icon" />
+            <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          </div>
+          <motion.button
+            type="submit"
+            className="btn-primary"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Login
+          </motion.button>
         </form>
-        <button onClick={handleGoogleAuth} className="btn-secondary mt-3">Sign in with Google</button>
-        <p className="text-center mt-4">Don't have an account? <Link to="/signup" className="text-blue-500">Sign up</Link></p>
-      </div>
+
+        <motion.button
+          disabled
+          onClick={handleGoogleAuth}
+          className="btn-google"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <FaGoogle className="google-icon" />
+          Sign in with Google
+        </motion.button>
+
+        <p className="signup-text">
+          Don't have an account? <Link to="/signup" className="signup-link">Sign up</Link>
+        </p>
+      </motion.div>
     </div>
   );
 };

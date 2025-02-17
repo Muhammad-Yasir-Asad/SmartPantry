@@ -1,0 +1,121 @@
+/* 🔹 Background Styling */
+.signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: radial-gradient(circle, #0e0e24, #4B4B84);
+    font-family: "Poppins", sans-serif;
+}
+  
+/* 🔹 Signup Box */
+.signup-box {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 350px;
+    color: white;
+    transition: transform 0.3s;
+}
+  
+.signup-box:hover {
+    transform: translateY(-5px);
+}
+  
+/* 🔹 Title */
+.signup-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+  
+/* 🔹 Input Fields */
+.input-group {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    transition: 0.3s ease-in-out;
+    border: 2px solid transparent;
+}
+  
+.input-group input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    color: white;
+    font-size: 1rem;
+    margin-left: 10px;
+    transition: color 0.3s ease-in-out;
+}
+  
+.input-group .icon {
+    color: white;
+    font-size: 1.2rem;
+    transition: color 0.3s ease-in-out;
+}
+
+/* 🔹 Focus Animation */
+.input-group.focused {
+    border-color: #ff8c42;
+    box-shadow: 0px 0px 10px rgba(255, 140, 66, 0.6);
+}
+
+
+.input-group.focused .icon {
+    color: #ff8c42;
+}
+  
+/* 🔹 Buttons */
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    background: #ff8c42;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+  
+.btn-primary:hover {
+    background: #e67e22;
+    transform: scale(1.05);
+}
+  
+.btn-primary:active {
+    transform: scale(0.95);
+}
+  
+/* 🔹 Error Message */
+.error-message {
+    color: red;
+    background: rgba(255, 0, 0, 0.1);
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+  
+/* 🔹 Sign Up Link */
+.signup-text {
+    margin-top: 15px;
+    font-size: 0.9rem;
+}
+  
+.signup-link {
+    color: #ff8c42;
+    font-weight: bold;
+    text-decoration: none;
+}
+  
+.signup-link:hover {
+    text-decoration: underline;
+}

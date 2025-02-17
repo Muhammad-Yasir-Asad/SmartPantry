@@ -3,7 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const pantryRoutes = require('./routes/pantryRoutes');
-const aiRecipeRoutes = require("./routes/aiRecipeRoutes");
+const aiRecipeRoutes = require('./routes/aiRecipeRoutes.js');
 const authRoutes = require("./routes/authRoutes"); // 🔹 Add Authentication Routes
 const errorHandler = require("./middleware/errorMiddleware");
 

@@ -1,0 +1,104 @@
+:root {
+    --primary-color: #3C3C75;
+    --accent-color: #00aaff;
+    --text-color: #ffffff;
+    --bg-color: #1e1e2e;
+    --card-bg: rgba(255, 255, 255, 0.1);
+    --shadow: rgba(0, 0, 0, 0.2);
+    
+}
+
+/* ChatGPT-Like Layout */
+.ai-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: radial-gradient(circle, #0e0e24, #4B4B84);
+    padding: 20px;
+}
+
+.ai-card {
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 10px var(--shadow);
+    width: 100%;
+    max-width: 600px;
+    color: var(--text-color);
+}
+
+.ai-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.ai-icon {
+    margin-right: 10px;
+}
+
+.ai-subtitle {
+    font-size: 16px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.ai-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: var(--accent-color);
+    color: var(--text-color);
+}
+
+.ai-button:disabled {
+    background-color: var(--shadow);
+    cursor: not-allowed;
+}
+
+.ai-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.ai-recipes {
+    margin-top: 20px;
+}
+
+.ai-recipes-title {
+    font-size: 20px;
+    margin-bottom: 40px;
+}
+
+.ai-recipe {
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 5px var(--shadow);
+}
+
+.ai-recipe-title {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.ai-recipe-content {
+    white-space: pre-wrap;
+    font-family: monospace;
+}
+
+.ai-cancel {
+    margin-top: 20px;
+}
