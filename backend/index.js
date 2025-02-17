@@ -12,11 +12,15 @@ const errorHandler = require("./middleware/errorMiddleware");
 const app = express();
 
 // ✅ Middleware
-app.use(express.json()); // Parses incoming JSON requests
-app.use(cors({ 
-    origin: process.env.FRONTEND_URL, 
-    credentials: true 
-  }));
+const corsOptions = {
+  origin: 'https://smart-pantry-frontend.vercel.app', // Replace with your frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+};
+
+// Enable CORS for all routes
+app.use(cors(corsOptions));
 
 // ✅ Connect to MongoDB
 mongoose
