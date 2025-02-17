@@ -35,10 +35,11 @@ const SpeechRecognitionComponent = () => {
 
         // Sending the POST request to add the item
         const res = await axios.post(
-          "http://localhost:5000/api/pantry", // Make sure your backend is running at this URL
+          `${process.env.REACT_APP_BACKEND_URL}/pantry`, // Use environment variable
           { name, quantity, expirationDate: "2025-12-31" },
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        
 
         console.log("Response: ", res);  // Log response for debugging
         alert(`✅ Added ${quantity} ${name} to inventory`);

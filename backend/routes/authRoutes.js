@@ -113,28 +113,4 @@ router.post(
     }
 );
 
-// 🟡 Google OAuth Authentication
-router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
-
-router.get(
-    "/google/callback",
-    passport.authenticate("google", { session: false, failureRedirect: "/login" }),
-    async (req, res) => {
-        try {
-            if (!req.user) return res.status(401).json({ message: "Google authentication failed" });
-
-            const token = jwt.sign(
-                { userId: req.user._id, role: req.user.role },
-                process.env.JWT_SECRET,
-                { expiresIn: "1h" }
-            );
-
-            res.redirect(`http://localhost:3000/dashboard?token=${token}`);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: "Server error", error: error.message });
-        }
-    }
-);
-
 module.exports = router;
