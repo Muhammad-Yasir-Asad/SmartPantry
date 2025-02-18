@@ -13,14 +13,13 @@ const app = express();
 
 // ✅ Middleware
 const corsOptions = {
-  origin: 'https://smart-pantry-frontend.vercel.app', // Replace with your frontend URL
+  origin: ['https://smart-pantry-frontend.vercel.app'], // Add production frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
-
-// Enable CORS for all routes
 app.use(cors(corsOptions));
+
 
 // ✅ Connect to MongoDB
 mongoose
