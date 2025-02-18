@@ -12,7 +12,7 @@ const ExpirationNotifications = () => {
     const fetchExpiringItems = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/pantry/expiring-soon`, {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/pantry/expiring-soon`, {
           headers: { Authorization: `Bearer ${token}` },
         });
   
