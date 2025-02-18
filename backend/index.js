@@ -45,7 +45,7 @@ mongoose.connect(process.env.MONGODB_URI, {
       
 // ✅ Routes
 app.get("/test", (req, res) => {
-    res.json({ message: "Backend is working!" });
+    res.json({ message: "Backend is working fine!" });
   });
 
   
