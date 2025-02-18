@@ -14,16 +14,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-// ✅ Middleware
+// // ✅ Middleware
 const corsOptions = {
-  origin: 'https://smart-pantry-frontend.vercel.app', // Replace with your frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-};
-
-// Enable CORS for all routes
-app.use(cors(corsOptions));
+    origin: ['https://smart-pantry-frontend.vercel.app', 'http://localhost:3000'], // Allow frontend
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // Allow OPTIONS method
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  };
+  
+  app.use(cors(corsOptions));
+  
+  // ✅ Explicitly handle preflight OPTIONS requests
+  app.options('*', (req, res) => {
+    res.sendStatus(200); // Respond with 200 OK for OPTIONS requests
+  });
+  
 
 // ✅ Connect to MongoDB
 mongoose
