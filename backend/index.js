@@ -31,6 +31,11 @@ mongoose
     });
 
 // ✅ Routes
+app.get("/test", (req, res) => {
+    res.json({ message: "Backend is working!" });
+  });
+
+  
 app.use("/api/auth", authRoutes); // 🔹 Add Authentication Routes
 app.use("/api/pantry", pantryRoutes); // Pantry Item Routes
 
