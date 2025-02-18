@@ -13,12 +13,17 @@ const app = express();
 
 // ✅ Middleware
 const corsOptions = {
-  origin: ['https://smart-pantry-frontend.vercel.app'], // Add production frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: ['https://smart-pantry-frontend.vercel.app', 'http://localhost:3000'], // Add both frontend URLs
+  methods: "GET,POST,PUT,DELETE,PATCH,OPTIONS",
+  allowedHeaders: "Content-Type,Authorization",
   credentials: true,
 };
+
 app.use(cors(corsOptions));
+
+// 🔹 Handle preflight requests (important)
+app.options("*", cors(corsOptions));
+
 
 
 // ✅ Connect to MongoDB
