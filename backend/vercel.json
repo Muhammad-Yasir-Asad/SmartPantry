@@ -18,11 +18,9 @@
     {
       "src": "/api/recipes/(.*)",
       "dest": "/index.js"
-    }
-  ],
-  "headers": [
+    },
     {
-      "source": "/(.*)",
+      "src": "/(.*)",
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
