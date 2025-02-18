@@ -1,61 +1,59 @@
+require("dotenv").config();
 const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const cors = require("cors");
+const pantryRoutes = require('./routes/pantryRoutes');
+const aiRecipeRoutes = require('./routes/aiRecipeRoutes.js');
+const authRoutes = require("./routes/authRoutes"); 
+const errorHandler = require("./middleware/errorMiddleware");
 
-dotenv.config();
 const app = express();
 
-// ✅ CORS CONFIGURATION
+// ✅ CORS Configuration
+const allowedOrigins = [
+    "https://smart-pantry-frontend.vercel.app", 
+    "http://localhost:3000"
+];
+
 const corsOptions = {
-    origin: ['https://smart-pantry-frontend.vercel.app', 'http://localhost:3000'], // Allow frontend
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    methods: "GET,POST,PUT,DELETE,PATCH,OPTIONS",
+    allowedHeaders: "Content-Type,Authorization",
+    credentials: true
 };
 
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // ✅ Explicitly handle preflight OPTIONS requests
 
+// ✅ Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Log Requests for Debugging
-app.use((req, res, next) => {
-    console.log(`📡 Incoming Request: ${req.method} ${req.url}`);
-    console.log("🛑 Request Headers:", req.headers);
-    next();
+// ✅ Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 60000,
+  socketTimeoutMS: 60000
 });
 
-// ✅ Explicitly handle preflight OPTIONS requests
-app.options("*", (req, res) => {
-    console.log("🔄 Handling OPTIONS request");
-    res.sendStatus(200);
-});
-
-// ✅ Test Route
+// ✅ Routes
 app.get("/test", (req, res) => {
     res.json({ message: "Backend is working fine!" });
 });
 
-// ✅ Connect to MongoDB
-mongoose
-    .connect(process.env.MONGODB_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        serverSelectionTimeoutMS: 60000,
-        socketTimeoutMS: 60000,
-    })
-    .then(() => console.log("✅ Connected to MongoDB"))
-    .catch((err) => console.error("❌ MongoDB Connection Error:", err));
-
-// ✅ Routes
-const pantryRoutes = require("./routes/pantryRoutes");
-const aiRecipeRoutes = require("./routes/aiRecipeRoutes");
-const authRoutes = require("./routes/authRoutes");
-
 app.use("/api/auth", authRoutes);
 app.use("/api/pantry", pantryRoutes);
 app.use("/api/recipes", aiRecipeRoutes);
+
+// ✅ Global Error Handler
+app.use(errorHandler);
 
 // ✅ Start Server
 const PORT = process.env.PORT || 5000;
