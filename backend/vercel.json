@@ -22,5 +22,11 @@
         { "key": "Access-Control-Allow-Credentials", "value": "true" }
       ]
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/run-cron",
+      "schedule": "* * * * *"
+    }
   ]
 }
