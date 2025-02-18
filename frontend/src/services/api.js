@@ -5,11 +5,11 @@ const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 
 export const getPantryItems = async (token) => {
-    return axios.get(`${API_URL}/pantry`, { headers: { Authorization: `Bearer ${token}` } });
+    return axios.get(`${API_URL}/pantry/`, { headers: { Authorization: `Bearer ${token}` } });
 };
 
 export const addPantryItem = async (item, token) => {
-    return axios.post(`${API_URL}/pantry`, item, { headers: { Authorization: `Bearer ${token}` } });
+    return axios.post(`${API_URL}/pantry/`, item, { headers: { Authorization: `Bearer ${token}` } });
 };
 
 export const updatePantryItem = async (id, item, token) => {
