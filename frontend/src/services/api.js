@@ -21,7 +21,7 @@ export const deletePantryItem = async (id, token) => {
 };
 
 export const getExpiringItems = async (token) => {
-    return axios.get(`${API_URL}/pantry/expiring-soon`, { headers: { Authorization: `Bearer ${token}` } });
+    return axios.get(`${API_URL}pantry/expiring-soon`, { headers: { Authorization: `Bearer ${token}` } });
 };
 
 export const loginUser = async (credentials) => {
