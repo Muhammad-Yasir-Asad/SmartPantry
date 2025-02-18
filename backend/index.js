@@ -6,6 +6,7 @@ const pantryRoutes = require('./routes/pantryRoutes');
 const aiRecipeRoutes = require('./routes/aiRecipeRoutes.js');
 const authRoutes = require("./routes/authRoutes"); 
 const errorHandler = require("./middleware/errorMiddleware");
+const cronRoutes = require("./routes/cron");
 
 const app = express();
 
@@ -47,6 +48,9 @@ mongoose.connect(process.env.MONGODB_URI, {
 app.get("/test", (req, res) => {
     res.json({ message: "Backend is working fine!" });
 });
+
+
+app.use("/api/cron", cronRoutes); 
 
 app.use("/api/auth", authRoutes);
 app.use("/api/pantry", pantryRoutes);
